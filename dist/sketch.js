@@ -115,11 +115,10 @@ const S = {
   pathHeightScale: 1.0,
 };
 
-// Conversion server config (can be overridden at runtime). By default this points
-// to the public tunnel created earlier; however when the app is served locally
-// we prefer the local converter at http://localhost:3333 so the tunnel gate page
-// doesn't interfere with automated uploads.
-// Default to local LAN converter. Set this to your machine IP if different.
+// Conversion server config (can be overridden at runtime). Default points to
+// the public converter domain used by the site. Local IPs (LAN/localhost)
+// are only relevant on the machine hosting the converter and should not be
+// presented to end users — use the public domain for client-facing URLs.
 // Default converter URL — public endpoint. Override in the UI if needed.
 let SERVER_CONVERT_URL = `https://houseoforbit.semmakata.com/convert`;
 // Credentials for Basic auth (the server must be started with these env vars).
@@ -128,9 +127,10 @@ let SERVER_CONVERT_PASS = 'r8VqL2x9sZkP4nT1';
 // If you prefer a base64 string directly, set SERVER_CONVERT_AUTH; otherwise the client will build it from USER/PASS.
 let SERVER_CONVERT_AUTH = '';
 
-// If the app runs on localhost, prefer the local conversion server to avoid
-// localtunnel gate pages and to use the ffmpeg installed on the machine.
-// Port where the local conversion server listens (change if you run it elsewhere)
+// The client uses SERVER_CONVERT_URL for uploads. A locally-run converter
+// may listen on a port for the server operator, but clients should continue
+// to use the public domain (the site/proxy will forward /convert to the
+// converter service). Port where a local converter listens (operator-only).
 const SERVER_CONVERT_PORT = 3333;
 
 // If you want to force a different converter host, set DEFAULT_CONVERT_HOST accordingly.
@@ -216,7 +216,7 @@ function uiLog(msg) {
 }
 
 
-// No tunnel fallbacks — prefer the local LAN converter by default.
+// No tunnel fallbacks — clients should use the configured public converter URL.
 
 let canvasElement;
 let nebulicaFont = null; // Initialize as null

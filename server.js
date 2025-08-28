@@ -599,8 +599,7 @@ app.get('/uploads-list', (req, res) => {
 
 app.listen(PORT, BIND_HOST, () => {
   console.log(`Conversion server listening on ${BIND_HOST}:${PORT}`);
-  console.log(`Reverse-proxy /ffmpeg to this service at https://${PUBLIC_HOSTNAME}/convert (or /ffmpeg).`);
-  console.log(' - Local access: http://localhost:' + PORT);
-  console.log('Note: this service is intentionally bound to localhost by default for security; configure your reverse proxy to expose it at your public domain.');
+  console.log(`Reverse-proxy /ffmpeg (or /convert) from your public domain to this service at https://${PUBLIC_HOSTNAME}/convert.`);
+  console.log('Note: this service is intentionally bound to localhost by default for security; the public site should use https://' + PUBLIC_HOSTNAME + '/convert to reach it via a reverse proxy.');
   console.log('Requires ffmpeg installed and available on PATH');
 });
