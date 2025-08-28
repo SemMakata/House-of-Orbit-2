@@ -1,0 +1,121 @@
+ffmpeg version 7.1.1 Copyright (c) 2000-2025 the FFmpeg developers
+  built with Apple clang version 17.0.0 (clang-1700.0.13.3)
+  configuration: --prefix=/opt/homebrew/Cellar/ffmpeg/7.1.1_5 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags='-Wl,-ld_classic' --enable-ffplay --enable-gnutls --enable-gpl --enable-libaom --enable-libaribb24 --enable-libbluray --enable-libdav1d --enable-libharfbuzz --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librav1e --enable-librist --enable-librubberband --enable-libsnappy --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libtesseract --enable-libtheora --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-frei0r --enable-libass --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libzimg --disable-libjack --disable-indev=jack --enable-videotoolbox --enable-audiotoolbox --enable-neon
+  libavutil      59. 39.100 / 59. 39.100
+  libavcodec     61. 19.101 / 61. 19.101
+  libavformat    61.  7.100 / 61.  7.100
+  libavdevice    61.  3.100 / 61.  3.100
+  libavfilter    10.  4.100 / 10.  4.100
+  libswscale      8.  3.100 /  8.  3.100
+  libswresample   5.  3.100 /  5.  3.100
+  libpostproc    58.  3.100 / 58.  3.100
+Input #0, matroska,webm, from 'uploads/63072d2241e508ee0f225b7803759029':
+  Metadata:
+    encoder         : WebKit
+  Duration: N/A, start: 0.000000, bitrate: N/A
+  Stream #0:0(eng): Video: vp9 (Profile 0), yuv420p(tv), 5120x2880, SAR 1:1 DAR 16:9, 1k tbr, 1k tbn (default)
+[out#0/mp4 @ 0x1587074d0] Codec AVOption b:a (set bitrate (in bits/s)) has not been used for any stream. The most likely reason is either wrong type (e.g. a video option with no video streams) or that it is a private option of some decoder which was not actually used for any stream.
+Stream mapping:
+  Stream #0:0 -> #0:0 (vp9 (native) -> h264 (h264_videotoolbox))
+Press [q] to stop, [?] for help
+[swscaler @ 0x131850000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x178030000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x178050000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x178070000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x111b40000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x111b60000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x111b80000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x111ba0000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x120780000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x1207a0000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x1207c0000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x131870000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x3089a0000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x1318a0000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x1318c0000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[h264_videotoolbox @ 0x158708290] Error: cannot create compression session: -12903
+[h264_videotoolbox @ 0x158708290] Try -allow_sw 1. The hardware encoder may be busy, or not supported.
+[vost#0:0/h264_videotoolbox @ 0x158707e30] Error while opening encoder - maybe incorrect parameters such as bit_rate, rate, width or height.
+[vf#0:0 @ 0x158708fe0] Error sending frames to consumers: Generic error in an external library
+[vf#0:0 @ 0x158708fe0] Task finished with error code: -542398533 (Generic error in an external library)
+[vf#0:0 @ 0x158708fe0] Terminating thread with return code -542398533 (Generic error in an external library)
+[vost#0:0/h264_videotoolbox @ 0x158707e30] Could not open encoder before EOF
+[vost#0:0/h264_videotoolbox @ 0x158707e30] Task finished with error code: -22 (Invalid argument)
+[vost#0:0/h264_videotoolbox @ 0x158707e30] Terminating thread with return code -22 (Invalid argument)
+[out#0/mp4 @ 0x1587074d0] Nothing was written into output file, because at least one of its streams received no packets.
+frame=    0 fps=0.0 q=0.0 Lsize=       0KiB time=N/A bitrate=N/A speed=N/A    
+Conversion failed!
+
+---- FALLBACK to software ----
+ffmpeg version 7.1.1 Copyright (c) 2000-2025 the FFmpeg developers
+  built with Apple clang version 17.0.0 (clang-1700.0.13.3)
+  configuration: --prefix=/opt/homebrew/Cellar/ffmpeg/7.1.1_5 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags='-Wl,-ld_classic' --enable-ffplay --enable-gnutls --enable-gpl --enable-libaom --enable-libaribb24 --enable-libbluray --enable-libdav1d --enable-libharfbuzz --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librav1e --enable-librist --enable-librubberband --enable-libsnappy --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libtesseract --enable-libtheora --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-frei0r --enable-libass --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libzimg --disable-libjack --disable-indev=jack --enable-videotoolbox --enable-audiotoolbox --enable-neon
+  libavutil      59. 39.100 / 59. 39.100
+  libavcodec     61. 19.101 / 61. 19.101
+  libavformat    61.  7.100 / 61.  7.100
+  libavdevice    61.  3.100 / 61.  3.100
+  libavfilter    10.  4.100 / 10.  4.100
+  libswscale      8.  3.100 /  8.  3.100
+  libswresample   5.  3.100 /  5.  3.100
+  libpostproc    58.  3.100 / 58.  3.100
+Input #0, matroska,webm, from 'uploads/63072d2241e508ee0f225b7803759029':
+  Metadata:
+    encoder         : WebKit
+  Duration: N/A, start: 0.000000, bitrate: N/A
+  Stream #0:0(eng): Video: vp9 (Profile 0), yuv420p(tv), 5120x2880, SAR 1:1 DAR 16:9, 1k tbr, 1k tbn (default)
+[out#0/mp4 @ 0x14e007b60] Codec AVOption b:a (set bitrate (in bits/s)) has not been used for any stream. The most likely reason is either wrong type (e.g. a video option with no video streams) or that it is a private option of some decoder which was not actually used for any stream.
+Stream mapping:
+  Stream #0:0 -> #0:0 (vp9 (native) -> h264 (libx264))
+Press [q] to stop, [?] for help
+[swscaler @ 0x142330000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x142350000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x142370000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x142390000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x1423b0000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x123cc8000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x123ce8000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x123d08000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x123d28000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x123d48000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x123d68000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x123d88000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x123da8000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x123dc8000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[swscaler @ 0x123de8000] No accelerated colorspace conversion found from yuv420p to bgr24.
+[libx264 @ 0x14e008950] using SAR=1/1
+[libx264 @ 0x14e008950] frame MB size (320x180) > level limit (36864)
+[libx264 @ 0x14e008950] DPB size (4 frames, 230400 mbs) > level limit (3 frames, 184320 mbs)
+[libx264 @ 0x14e008950] MB rate (57600000) > level limit (2073600)
+[libx264 @ 0x14e008950] using cpu capabilities: ARMv8 NEON
+[libx264 @ 0x14e008950] profile High, level 5.2, 4:2:0, 8-bit
+[libx264 @ 0x14e008950] 264 - core 164 r3108 31e19f9 - H.264/MPEG-4 AVC codec - Copyleft 2003-2023 - http://www.videolan.org/x264.html - options: cabac=1 ref=3 deblock=1:1:1 analyse=0x3:0x113 me=hex subme=7 psy=1 psy_rd=0.40:0.00 mixed_ref=1 me_range=16 chroma_me=1 trellis=1 8x8dct=1 cqm=0 deadzone=21,11 fast_pskip=1 chroma_qp_offset=-2 threads=21 lookahead_threads=3 sliced_threads=0 nr=0 decimate=1 interlaced=0 bluray_compat=0 constrained_intra=0 bframes=5 b_pyramid=2 b_adapt=1 b_bias=0 direct=1 weightb=1 open_gop=0 weightp=2 keyint=250 keyint_min=25 scenecut=40 intra_refresh=0 rc_lookahead=40 rc=abr mbtree=1 bitrate=40000 ratetol=1.0 qcomp=0.60 qpmin=0 qpmax=69 qpstep=4 vbv_maxrate=60000 vbv_bufsize=80000 nal_hrd=none filler=0 ip_ratio=1.40 aq=1:0.60
+Output #0, mp4, to 'uploads/converted-1756160230453.mp4':
+  Metadata:
+    encoder         : Lavf61.7.100
+  Stream #0:0(eng): Video: h264 (avc1 / 0x31637661), yuv420p(tv, bt709/unknown/unknown, progressive), 5120x2880 [SAR 1:1 DAR 16:9], q=2-31, 40000 kb/s, 1k fps, 16k tbn (default)
+      Metadata:
+        encoder         : Lavc61.19.101 libx264
+      Side data:
+        cpb: bitrate max/min/avg: 60000000/0/40000000 buffer size: 80000000 vbv_delay: N/A
+frame=    0 fps=0.0 q=0.0 size=       0KiB time=N/A bitrate=N/A speed=N/A    frame=    0 fps=0.0 q=0.0 size=       0KiB time=N/A bitrate=N/A speed=N/A    frame=    0 fps=0.0 q=0.0 size=       0KiB time=N/A bitrate=N/A speed=N/A    frame=    0 fps=0.0 q=0.0 size=       0KiB time=N/A bitrate=N/A speed=N/A    frame=    0 fps=0.0 q=0.0 size=       0KiB time=N/A bitrate=N/A speed=N/A    frame=   12 fps=4.0 q=31.0 size=       0KiB time=00:00:00.20 bitrate=   1.9kbits/s speed=0.0664x    frame=   23 fps=6.5 q=22.0 size=       0KiB time=00:00:00.42 bitrate=   0.9kbits/s speed=0.121x    frame=   45 fps= 11 q=9.0 size=       0KiB time=00:00:00.84 bitrate=   0.5kbits/s speed=0.209x    frame=   66 fps= 15 q=6.0 size=     256KiB time=00:00:01.22 bitrate=1709.5kbits/s speed=0.27x    frame=   87 fps= 17 q=3.0 size=     768KiB time=00:00:01.62 bitrate=3867.1kbits/s speed=0.322x    frame=  107 fps= 19 q=1.0 size=    1024KiB time=00:00:01.99 bitrate=4207.1kbits/s speed=0.359x    frame=  130 fps= 21 q=0.0 size=    1536KiB time=00:00:02.41 bitrate=5219.1kbits/s speed=0.398x    frame=  170 fps= 26 q=0.0 size=    2560KiB time=00:00:03.14 bitrate=6670.5kbits/s speed=0.479x    [mp4 @ 0x14e007d90] Starting second pass: moving the moov atom to the beginning of the file
+[out#0/mp4 @ 0x14e007b60] video:4006KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: 0.112296%
+frame=  214 fps= 32 q=-1.0 Lsize=    4010KiB time=00:00:03.96 bitrate=8295.5kbits/s speed=0.584x    
+[libx264 @ 0x14e008950] frame I:1     Avg QP:41.66  size: 15828
+[libx264 @ 0x14e008950] frame P:39    Avg QP: 6.61  size: 30748
+[libx264 @ 0x14e008950] frame B:174   Avg QP:11.37  size: 16586
+[libx264 @ 0x14e008950] consecutive B-frames:  0.5%  0.9%  5.6%  3.7%  2.3% 86.9%
+[libx264 @ 0x14e008950] mb I  I16..4:  0.6% 99.2%  0.2%
+[libx264 @ 0x14e008950] mb P  I16..4:  2.1%  1.0%  0.0%  P16..4:  0.4%  0.2%  0.3%  0.0%  0.0%    skip:96.0%
+[libx264 @ 0x14e008950] mb B  I16..4:  0.0%  0.0%  0.0%  B16..8:  0.5%  0.2%  0.1%  direct: 0.1%  skip:99.1%  L0:36.8% L1:45.3% BI:17.8%
+[libx264 @ 0x14e008950] final ratefactor: -6.64
+[libx264 @ 0x14e008950] 8x8 transform intra:60.2% inter:8.1%
+[libx264 @ 0x14e008950] coded y,uvDC,uvAC intra: 4.0% 6.9% 6.4% inter: 0.3% 0.5% 0.5%
+[libx264 @ 0x14e008950] i16 v,h,dc,p: 91%  5%  3%  0%
+[libx264 @ 0x14e008950] i8 v,h,dc,ddl,ddr,vr,hd,vl,hu: 36%  6% 57%  0%  0%  0%  0%  0%  0%
+[libx264 @ 0x14e008950] i4 v,h,dc,ddl,ddr,vr,hd,vl,hu: 27% 29% 40%  1%  1%  0%  1%  0%  1%
+[libx264 @ 0x14e008950] i8c dc,h,v,p: 94%  3%  3%  0%
+[libx264 @ 0x14e008950] Weighted P-Frames: Y:0.0% UV:0.0%
+[libx264 @ 0x14e008950] ref P L0: 77.8%  3.4% 12.1%  6.7%
+[libx264 @ 0x14e008950] ref B L0: 88.1% 10.3%  1.5%
+[libx264 @ 0x14e008950] ref B L1: 95.7%  4.3%
+[libx264 @ 0x14e008950] kb/s:8181.34

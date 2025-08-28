@@ -1,0 +1,559 @@
+/* Modern Fullscreen Canvas with Overlay UI */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    /* prefer Apple's system fonts for a native feel */
+    font-family: -apple-system, 'SF Pro Text', 'Inter', BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #000; /* keep canvas background dark while the UI panel is light */
+}
+
+/* Fullscreen Canvas */
+main {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+}
+
+canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Modern UI Overlay */
+.ui-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* the UI panel is lighter and slightly translucent for an Apple-like feel */
+    width: 420px;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 8px 0 30px rgba(0,0,0,0.12);
+    border-right: none;
+    z-index: 100;
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.28s ease;
+    transform: translateX(0);
+}
+
+.ui-overlay.hidden {
+    /* fully hide offscreen and stop interactions */
+    transform: translateX(calc(-110% - 8px));
+    pointer-events: none;
+}
+
+.panel {
+    padding: 28px 24px;
+    height: 100%;
+    overflow-y: auto;
+    color: #1c1c1e; /* dark text on light panel */
+    border-radius: 0 12px 12px 0; /* rounded inner edge */
+}
+
+/* Typography */
+h1 {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #0a84ff; /* system blue accent */
+}
+
+h2 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1c1c1e;
+    margin-bottom: 12px;
+    margin-top: 24px;
+}
+
+.sub {
+    font-size: 13px;
+    color: rgba(28,28,30,0.6);
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+.section {
+    margin-bottom: 24px;
+}
+
+/* Modern Controls */
+.row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.row label {
+    min-width: 120px;
+    font-size: 13px;
+    color: rgba(28,28,30,0.8);
+    font-weight: 600;
+}
+
+/* Styled range slider suitable for light panel background */
+input[type="range"] {
+    flex: 1;
+    height: 28px; /* allow room for thumb */
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    outline: none;
+}
+
+/* WebKit track */
+input[type="range"]::-webkit-slider-runnable-track {
+    height: 8px;
+    background: linear-gradient(90deg, #eef0f2 0%, #ececec 100%);
+    border-radius: 999px;
+    box-shadow: inset 0 1px 0 rgba(0,0,0,0.04);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-top: -6px; /* vertically center on the track */
+    background: linear-gradient(135deg, #7b61ff 0%, #6d6af8 100%);
+    border: 2px solid #fff;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.12), 0 0 0 4px rgba(10,132,255,0.06);
+    cursor: pointer;
+}
+
+input[type="range"]:focus::-webkit-slider-runnable-track {
+    box-shadow: inset 0 1px 0 rgba(0,0,0,0.04), 0 0 0 6px rgba(10,132,255,0.06);
+}
+
+/* Firefox track/thumb */
+input[type="range"]::-moz-range-track {
+    height: 8px;
+    background: #ececec;
+    border-radius: 999px;
+    box-shadow: inset 0 1px 0 rgba(0,0,0,0.04);
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7b61ff 0%, #6d6af8 100%);
+    border: 2px solid #fff;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+    cursor: pointer;
+}
+
+input[type="range"]:focus {
+    outline: none;
+}
+
+input[type="number"] {
+    width: 70px;
+    background: #f6f6f8;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: #111;
+    font-size: 13px;
+    text-align: center;
+}
+
+input[type="number"]:focus {
+    outline: none;
+    border-color: rgba(10,132,255,0.9);
+    box-shadow: 0 0 0 4px rgba(10,132,255,0.08);
+    background: #fff;
+}
+
+/* Text Area */
+.text-area {
+    margin-bottom: 16px;
+}
+
+.text-area label {
+    display: block;
+    font-size: 13px;
+    color: rgba(28,28,30,0.78); /* dark gray for readability */
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+textarea {
+    width: 100%;
+    background: #f6f6f8;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 8px;
+    padding: 12px;
+    color: #111;
+    font-size: 13px;
+    font-family: -apple-system, 'SF Pro Text', Inter, sans-serif;
+    resize: vertical;
+    min-height: 80px;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: rgba(10,132,255,0.9);
+    box-shadow: 0 0 0 4px rgba(10,132,255,0.06);
+    background: #fff;
+}
+
+/* Ensure textarea content is dark on the light panel (override older white rules) */
+.text-area textarea,
+#textContent {
+    color: #1c1c1e !important;
+}
+.text-area textarea::placeholder,
+#textContent::placeholder {
+    color: rgba(28,28,30,0.45) !important;
+}
+
+/* Toggle Switch */
+.tog {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+input[type="checkbox"] {
+    width: 44px;
+    height: 24px;
+    appearance: none;
+    background: #e9e9ed;
+    border-radius: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.22s ease;
+    border: 1px solid rgba(0,0,0,0.04);
+}
+
+input[type="checkbox"]:checked {
+    background: rgba(10,132,255,0.95);
+}
+
+input[type="checkbox"]::before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.22s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+}
+
+input[type="checkbox"]:checked::before {
+    transform: translateX(20px);
+}
+
+/* Modern Buttons */
+.btns {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+button {
+    background: #f2f2f7;
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 12px;
+    padding: 10px 16px;
+    color: #0a84ff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+}
+
+button:active { transform: translateY(0); }
+
+/* Hamburger Button - positioned outside of UI overlay */
+.hamburger-btn {
+    position: fixed;
+    top: 32px;
+    left: 400px; /* default position (will be overridden when open/hidden) */
+    z-index: 1100; /* ensure this sits above overlays and indicators */
+    width: 48px;
+    height: 48px;
+    background: rgba(15, 15, 15, 0.8);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: #ffffff;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.hamburger-btn:hover {
+    /* keep contrast for the icon: use a subtle light background and dark icon color */
+    background: rgba(255, 255, 255, 0.08);
+    color: #111;
+    transform: scale(1.05);
+}
+
+.hamburger-btn.ui-hidden {
+    left: 32px; /* Move to left edge when UI is hidden */
+}
+
+/* When UI is open, place the button just outside the panel's right edge */
+.hamburger-btn.ui-open {
+    /* Assuming panel width 420px + left offset 0, place button slightly inside viewport */
+    left: calc(420px + 12px);
+}
+
+/* Recording indicator (persistent, outside canvas) */
+.record-indicator {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: rgba(0,0,0,0.6);
+    border: 1px solid rgba(255, 0, 0, 0.25);
+    border-radius: 14px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 12px;
+    pointer-events: none; /* non-interactive */
+}
+.record-indicator .rec-dot {
+    width: 10px;
+    height: 10px;
+    background: #ff3b30;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(255,59,48,0.8);
+}
+.record-indicator .rec-label { font-family: 'Inter', sans-serif; }
+
+/* Color Menu Overlay */
+.color-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.color-menu-content {
+    background: rgba(15, 15, 15, 0.95);
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 32px;
+    max-width: 600px;
+    width: 90vw;
+    max-height: 80vh;
+    overflow-y: auto;
+    color: #ffffff;
+}
+
+.color-menu h2 {
+    text-align: center;
+    margin-bottom: 32px;
+    font-size: 24px;
+}
+
+.color-categories {
+    display: grid;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.color-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.color-item.active {
+    border-color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.color-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.color-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.color-preview {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.rgb-controls {
+    display: grid;
+    gap: 12px;
+}
+
+.rgb-slider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.rgb-slider.selected {
+    background: rgba(37, 164, 255, 0.1);
+    border: 1px solid rgba(37, 164, 255, 0.3);
+}
+
+.rgb-slider.inactive {
+    opacity: 0.5;
+}
+
+.rgb-slider label {
+    min-width: 40px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.rgb-slider input[type="range"] {
+    flex: 1;
+    margin: 0 8px;
+}
+
+.rgb-slider .value {
+    min-width: 32px;
+    text-align: center;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Color Actions */
+.color-actions {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+/* Reset option visual cue */
+#resetOption {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 12px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+#resetOption:hover,
+#resetOption:focus,
+.menu-option.active,
+#resetOption.active {
+    background: linear-gradient(135deg, rgba(102,126,234,0.18) 0%, rgba(118,75,162,0.18) 100%);
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(102,126,234,0.12);
+}
+
+#resetOption:active {
+    transform: translateY(0);
+}
+
+.reset-btn {
+    background: rgba(255, 59, 48, 0.1);
+    border-color: rgba(255, 59, 48, 0.3);
+    color: #ff3b30;
+}
+
+.reset-btn:hover {
+    background: rgba(255, 59, 48, 0.2);
+}
+
+.reset-btn.active {
+    background: rgba(255, 59, 48, 0.2);
+    border-color: #ff3b30;
+}
+
+/* Gamepad Hints */
+.gamepad-hints {
+    text-align: center;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .ui-overlay {
+        width: 100vw;
+    }
+    
+    .color-menu-content {
+        width: 95vw;
+        padding: 24px;
+    }
+}

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House of Orbit</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        @font-face {
+            font-family: 'Nebulica-Bold';
+            src: url('fonts/nebulica modern sans/OTF/Nebulica-Bold.otf') format('opentype'),
+                 url('fonts/nebulica modern sans/TTF/Nebulica-Bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+            font-display: swap;
+        }
+    </style>
+        <style>
+            /* Conversion overlay (upload + convert progress) */
+            #convertOverlay {
+                position: fixed;
+                left: 0; top: 0; right: 0; bottom: 0;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                background: rgba(0,0,0,0.4);
+                z-index: 9999;
+            }
+            #convertCard {
+                background: #111;
+                color: #fff;
+                padding: 18px 22px;
+                border-radius: 10px;
+                width: 420px;
+                text-align: center;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+                font-family: sans-serif;
+            }
+            #convertProgress { height: 10px; background:#222; border-radius:6px; overflow:hidden; margin:12px 0; }
+            #convertProgress > i { display:block; height:100%; width:0%; background:linear-gradient(90deg,#4caf50,#8bc34a); transition:width 220ms linear; }
+            .convert-controls { margin-top:12px; display:flex; gap:8px; justify-content:center; }
+            .convert-controls button { padding:8px 12px; border-radius:6px; border:0; cursor:pointer; }
+            .btn-primary { background:#4caf50; color:#fff; }
+            .btn-ghost { background:transparent; color:#fff; border:1px solid rgba(255,255,255,0.12); }
+        </style>
+        <style>
+            /* Small UI tidy: advanced toggle */
+            .advanced-toggle { display:inline-flex; align-items:center; gap:8px; cursor:pointer; background:transparent; border:1px solid rgba(255,255,255,0.06); padding:6px 8px; border-radius:6px; color:#ddd }
+            #advancedControls { display:none; margin-top:8px; width:100%; }
+            .compact-input { width:340px; padding:6px; border-radius:6px; border:1px solid rgba(0,0,0,0.12); }
+            .small-btn { padding:6px 8px; border-radius:6px; }
+            /* Increase padding for the right-side UI panel to give breathing room */
+            .ui-overlay .panel {
+                /* keep left padding compact but increase right padding only */
+                padding: 28px 48px 28px 28px; /* top right bottom left */
+                box-sizing: border-box;
+                /* make the dark UI background slightly wider so elements fit nicely */
+                width: 420px;            /* preferred sidebar width */
+                max-width: 92vw;        /* responsive fallback for small screens */
+                min-width: 320px;       /* avoid becoming too narrow */
+                overflow-wrap: break-word;
+                /* light gray background so dark text is readable */
+                background: rgba(243,244,246,0.95);
+                color: #1c1c1e;
+            }
+            /* Make compact inputs truly responsive (override inline max-width where present) */
+            .ui-overlay .panel .compact-input {
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box;
+            }
+            /* Reduce right padding on small screens so the panel never overflows */
+            @media (max-width: 900px) {
+                .ui-overlay .panel { padding-right: 28px; width: 95vw; }
+            }
+            /* Accordions */
+            .accordion { margin-bottom: 12px; }
+            /* dark-gray accordion text to match the Apple-like light UI */
+            .accordion-header { background: transparent; padding: 8px 10px; cursor: pointer; display:flex; justify-content:space-between; align-items:center; border-radius:6px; color: rgba(28,28,30,0.85); }
+            .accordion-header:hover { background: rgba(28,28,30,0.04); }
+            .accordion-header .accordion-chevron { color: rgba(28,28,30,0.6); }
+            .accordion-content { padding: 8px 4px 12px 4px; }
+        </style>
+</head>
+<body>
+    <!-- Fullscreen Canvas -->
+    <main id="p5-container"></main>
+    
+    <!-- Overlay UI Panel -->
+    <div class="ui-overlay hidden" id="uiOverlay">
+        <div class="panel">
+            <h1>House of Orbit</h1>
+            <div class="sub">Interactive Orbital Visualization</div>
+            <!-- Server settings moved up for quick access (accordion) -->
+            <div class="accordion">
+                <div class="accordion-header" data-target="serverContent" aria-expanded="false">Conversion Server <span class="accordion-chevron">▾</span></div>
+                <div id="serverContent" class="accordion-content" style="display:none;margin-bottom:12px;">
+                    <label style="font-size:13px;color:#ccc;display:block;margin-bottom:6px;">Conversion Server</label>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <div id="serverStatus" title="Conversion server status">Server: unknown</div>
+                    </div>
+                    <div style="margin-top:8px;">
+                        <input id="convertUrlInput" class="compact-input" type="text" style="width:100%;max-width:620px;" placeholder="http://192.168.2.5:3333/convert">
+                    </div>
+                    <div style="display:flex;flex-direction:row;gap:12px;margin-top:12px;">
+                        <button id="convertTestBtn" class="small-btn" style="flex:0 0 160px;">Test</button>
+                        <button id="convertUploadTestBtn" class="small-btn" style="flex:0 0 160px;">Upload Test</button>
+                    </div>
+                    <div id="convertTestResult" style="margin-top:6px;font-size:12px;color:#ddd"></div>
+                </div>
+            </div>
+            
+            <div class="accordion">
+                <div class="accordion-header" data-target="orbitalContent" aria-expanded="true">Orbital Controls <span class="accordion-chevron">▾</span></div>
+                <div id="orbitalContent" class="accordion-content" style="display:block;">
+                <h2>Orbital Controls</h2>
+                <div class="row">
+                    <label for="theta">Hoek θ (deg):</label>
+                    <input type="range" id="theta" min="0" max="360" step="1" value="0">
+                    <input type="number" id="thetaNum" value="0">
+                </div>
+                <div class="row">
+                    <label for="speed">Snelheid (deg/s):</label>
+                    <input type="range" id="speed" min="5" max="360" step="1" value="60">
+                    <input type="number" id="speedNum" value="60">
+                </div>
+                <div class="row">
+                    <label for="R">Orbit R (px):</label>
+                    <input type="range" id="R" min="10" max="800" step="1" value="270">
+                    <input type="number" id="Rnum" value="270">
+                </div>
+                <div class="row">
+                    <label for="rc">Cirkel r (px):</label>
+                    <input type="range" id="rc" min="10" max="80" step="1" value="60">
+                    <input type="number" id="rcNum" value="60">
+                </div>
+                <div class="row">
+                    <label for="lw">Lijnbreedte:</label>
+                    <input type="range" id="lw" min="1" max="30" step="1" value="13">
+                    <input type="number" id="lwNum" step="1" value="13">
+                </div>
+                <!-- Orbit path toggle moved to Debug Options -->
+                <div class="controls">
+                    <!-- advanced controls moved to top server section -->
+                    <div id="advancedControls">
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <button id="convertUploadTestBtn" class="small-btn">Upload Test Blob</button>
+                        </div>
+                        <div id="convertTestResult" style="margin-top:6px;font-size:12px;color:#ddd"></div>
+                        <div id="clientLog" style="margin-top:8px; max-height:120px; overflow:auto; font-size:12px; color:#eee; background:rgba(0,0,0,0.06); padding:8px; border-radius:6px; width:100%; display:none"></div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            
+            <div class="accordion">
+                <div class="accordion-header" data-target="gridContent" aria-expanded="false">Grid & Scaling <span class="accordion-chevron">▾</span></div>
+                <div id="gridContent" class="accordion-content" style="display:none;">
+                <h2>Grid & Scaling</h2>
+                <div class="row">
+                    <label for="gridWidth">Grid Breedte:</label>
+                    <input type="range" id="gridWidth" min="0.3" max="2.0" step="0.1" value="1.0">
+                    <input type="number" id="gridWidthNum" step="0.1" value="1.0">
+                </div>
+                <div class="row">
+                    <label for="gridHeight">Grid Hoogte:</label>
+                    <input type="range" id="gridHeight" min="0.3" max="2.0" step="0.1" value="1.0">
+                    <input type="number" id="gridHeightNum" step="0.1" value="1.0">
+                </div>
+                <div class="row">
+                    <label for="gridScale">Grid/Huis (%):</label>
+                    <input type="range" id="gridScale" min="10" max="150" step="5" value="100">
+                    <input type="number" id="gridScaleNum" step="5" value="100">
+                </div>
+                <div class="row">
+                    <label for="masterScale">Master Schaal (%):</label>
+                    <input type="range" id="masterScale" min="25" max="200" step="5" value="100">
+                    <input type="number" id="masterScaleNum" step="5" value="100">
+                </div>
+                <div class="tog">
+                    <input type="checkbox" id="grid">
+                    <label for="grid">Show Grid</label>
+                </div>
+                </div>
+            </div>
+            
+            <div class="accordion">
+                <div class="accordion-header" data-target="textContentPanel" aria-expanded="false">Text Controls <span class="accordion-chevron">▾</span></div>
+                <div id="textContentPanel" class="accordion-content" style="display:none;">
+                <h2>Text Controls</h2>
+                <div class="row">
+                    <label for="fontSize">Tekst Grootte:</label>
+                    <input type="range" id="fontSize" min="12" max="80" step="2" value="45">
+                    <input type="number" id="fontSizeNum" step="2" value="45">
+                </div>
+                <div class="row">
+                    <label for="lineHeight">Regel Hoogte:</label>
+                    <input type="range" id="lineHeight" min="0.5" max="1.5" step="0.05" value="0.9">
+                    <input type="number" id="lineHeightNum" step="0.05" value="0.9">
+                </div>
+                <div class="row">
+                    <label for="textPadding">Tekst Marge:</label>
+                    <input type="range" id="textPadding" min="5" max="50" step="5" value="20">
+                    <input type="number" id="textPaddingNum" step="5" value="20">
+                </div>
+                <div class="text-area">
+                    <label for="textContent">Tekst Inhoud:</label>
+                    <textarea id="textContent" rows="3" placeholder="HOUSE&#10;OF&#10;ORBIT">HOUSE
+OF
+ORBIT</textarea>
+                </div>
+                </div>
+            </div>
+            
+            <div class="accordion">
+                <div class="accordion-header" data-target="animContent" aria-expanded="false">Animation Controls <span class="accordion-chevron">▾</span></div>
+                <div id="animContent" class="accordion-content" style="display:none;">
+                <h2>Animation Controls</h2>
+                <div class="btns">
+                    <button id="playBtn">▶︎ Animatie</button>
+                    <button id="reset">Reset</button>
+                </div>
+                </div>
+            </div>
+            
+            <div class="accordion">
+                <div class="accordion-header" data-target="colorContent" aria-expanded="false">Colors <span class="accordion-chevron">▾</span></div>
+                <div id="colorContent" class="accordion-content" style="display:none;">
+                <h2>Colors</h2>
+                <div class="btns">
+                    <button id="colorBtn">🎨 Color Settings</button>
+                </div>
+                </div>
+            </div>
+            
+            <div class="accordion">
+                <div class="accordion-header" data-target="debugContent" aria-expanded="false">Debug Options <span class="accordion-chevron">▾</span></div>
+                <div id="debugContent" class="accordion-content" style="display:none;">
+                <h2>Debug Options</h2>
+                <div class="tog">
+                    <input type="checkbox" id="debug">
+                    <label for="debug">Debug Mode</label>
+                </div>
+                <div class="tog" style="margin-top:8px; display:flex; align-items:center; gap:8px;">
+                    <input type="checkbox" id="toggleOrbitPathChk">
+                    <label for="toggleOrbitPathChk">Show Orbit Path</label>
+                </div>
+                <div class="tog">
+                    <input type="checkbox" id="showForeground" checked>
+                    <label for="showForeground">Show Foreground Elements</label>
+                </div>
+                <div class="hint">
+                    <small>PS / Circle button toggles foreground visibility</small>
+                </div>
+                </div>
+            </div>
+            
+            <div class="accordion">
+                <div class="accordion-header" data-target="exportContent" aria-expanded="false">Export <span class="accordion-chevron">▾</span></div>
+                <div id="exportContent" class="accordion-content" style="display:none;">
+                <h2>Export</h2>
+                <div class="btns">
+                    <button id="saveBtn">Screenshot (PNG)</button>
+                    <button id="svgBtn">Export SVG</button>
+                    <!-- New: Record SVG (distinct from Export SVG) -->
+                    <button id="recordSvgBtn" class="small-btn" style="background:#222;color:#fff;border-radius:6px;">Record SVG</button>
+                    <button id="recordBtn">Record / Export</button>
+                </div>
+                <div style="margin-top:10px;">
+                    <label for="exportPreset" style="display:block;font-size:13px;color:#666;margin-bottom:6px;">Export Preset</label>
+                    <select id="exportPreset" class="compact-input">
+                        <option value="youtube_4k">YouTube / Online (4K)</option>
+                        <option value="archive_4k">Archive / Master (4K, ProRes)</option>
+                        <option value="transparency_4k">Transparency (4K, ProRes 4444)</option>
+                        <option value="social_4k">Social (4K)</option>
+                        <option value="youtube_hd" selected>YouTube / Online (Full HD)</option>
+                        <option value="archive_hd">Archive / Master (Full HD, ProRes)</option>
+                        <option value="transparency_hd">Transparency (Full HD, ProRes 4444)</option>
+                        <option value="social_hd">Social (Full HD)</option>
+                        <option value="custom">Custom (developer)</option>
+                    </select>
+                    <div style="margin-top:6px;font-size:12px;color:#888">Choose an export preset — the app will apply recommended codec, resolution and quality automatically.</div>
+                    <div style="margin-top:8px;display:flex;gap:8px;align-items:center;">
+                        <div style="font-size:12px;color:#444;">Computed export size:</div>
+                        <div id="computedExportSize" style="font-weight:600;color:#111;">--</div>
+                    </div>
+                    <div style="margin-top:8px;display:flex;gap:8px;align-items:center;">
+                        <label for="clientSafeMax" style="font-size:12px;color:#666;">Client max width (px):</label>
+                        <input id="clientSafeMax" type="number" class="compact-input" style="width:140px;" min="512" max="7680" step="64" value="4096">
+                    </div>
+                    <div style="margin-top:8px;display:flex;gap:8px;align-items:center;">
+                        <label for="exportPixelDensity" style="font-size:12px;color:#666;">Export pixelDensity:</label>
+                        <select id="exportPixelDensity" class="compact-input" style="width:140px;">
+                            <option value="1">1× (native)</option>
+                            <option value="1.5">1.5×</option>
+                            <option value="2">2×</option>
+                            <option value="3">3×</option>
+                        </select>
+                        <div style="font-size:11px;color:#999;">Higher values increase quality and memory use.</div>
+                    </div>
+                    <div style="margin-top:6px;font-size:11px;color:#b33;display:none;" id="exportWarning">Large export sizes may crash some browsers — increase gradually.</div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Hamburger Button - positioned outside UI overlay -->
+    <button class="hamburger-btn ui-hidden" id="hamburgerBtn">⚙</button>
+    
+    <!-- Recording indicator (DOM overlay - will not be captured by canvas recording) -->
+    <div id="recordIndicator" class="record-indicator" aria-hidden="true" title="Recording" style="display:none;">
+        <span class="rec-dot"></span>
+    <span class="rec-label">REC</span>
+    <span id="recDuration" style="margin-left:8px;font-size:13px;color:#fff;">00:00</span>
+    </div>
+
+    <!-- Convert overlay (visible during upload/convert) -->
+    <div id="convertOverlay">
+        <div id="convertCard">
+            <div id="convertTitle">Uploading and converting...</div>
+            <div id="convertStatus">Preparing upload</div>
+            <div id="convertProgress"><i></i></div>
+            <div class="convert-controls">
+                <button id="convertCancel" class="btn-ghost">Cancel</button>
+                <button id="convertManualDownload" class="btn-primary" style="display:none;">Download WebM</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Export preset UI managed in JS; no inline DOM tweaks needed -->
+    <!-- Color Menu Overlay -->
+    <div id="colorMenu" class="color-menu" style="display: none;">
+        <div class="color-menu-content">
+            <h2>Color Settings</h2>
+            <div class="color-categories">
+                <div class="color-item" data-type="background">
+                    <div class="color-header">
+                        <h3>Background</h3>
+                        <div class="color-preview" id="backgroundPreview"></div>
+                    </div>
+                    <div class="rgb-controls">
+                        <div class="rgb-slider">
+                            <label>Red</label>
+                            <input type="range" min="0" max="255" value="255" id="backgroundR">
+                            <span class="value">255</span>
+                        </div>
+                        <div class="rgb-slider">
+                            <label>Green</label>
+                            <input type="range" min="0" max="255" value="255" id="backgroundG">
+                            <span class="value">255</span>
+                        </div>
+                        <div class="rgb-slider">
+                            <label>Blue</label>
+                            <input type="range" min="0" max="255" value="255" id="backgroundB">
+                            <span class="value">255</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="color-item" data-type="foreground">
+                    <div class="color-header">
+                        <h3>Foreground</h3>
+                        <div class="color-preview" id="foregroundPreview"></div>
+                    </div>
+                    <div class="rgb-controls">
+                        <div class="rgb-slider">
+                            <label>Red</label>
+                            <input type="range" min="0" max="255" value="11" id="foregroundR">
+                            <span class="value">11</span>
+                        </div>
+                        <div class="rgb-slider">
+                            <label>Green</label>
+                            <input type="range" min="0" max="255" value="15" id="foregroundG">
+                            <span class="value">15</span>
+                        </div>
+                        <div class="rgb-slider">
+                            <label>Blue</label>
+                            <input type="range" min="0" max="255" value="26" id="foregroundB">
+                            <span class="value">26</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="color-actions">
+                <button class="reset-btn menu-option" id="resetOption">Reset to Default</button>
+            </div>
+            
+            <div class="gamepad-hints">
+                <p>🎮 PSN: Close | ↕️ Navigate | ↔️ Adjust Values</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="libraries/p5.min.js"></script>
+    <script src="libraries/opentype.min.js"></script>
+    <script src="sketch.js"></script>
+        <!-- Optional ffmpeg.wasm for client-side WebM->MP4 conversion -->
+        <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js"></script>
+    <script>
+        // Accordion wiring
+        (function(){
+            document.querySelectorAll('.accordion-header').forEach(h => {
+                h.addEventListener('click', () => {
+                    const target = h.getAttribute('data-target');
+                    const el = document.getElementById(target);
+                    if (!el) return;
+                    const expanded = h.getAttribute('aria-expanded') === 'true';
+                    h.setAttribute('aria-expanded', String(!expanded));
+                    if (expanded) { el.style.display = 'none'; h.querySelector('.accordion-chevron').textContent = '▾'; }
+                    else { el.style.display = 'block'; h.querySelector('.accordion-chevron').textContent = '▴'; }
+                });
+            });
+        })();
+        // UI: Advanced toggle
+        (function(){
+            const advBtn = document.getElementById('advancedToggle');
+            const advPanel = document.getElementById('advancedControls');
+            const clientLog = document.getElementById('clientLog');
+            const debugChk = document.getElementById('debug');
+            if (advBtn && advPanel) {
+                advBtn.addEventListener('click', () => {
+                    const expanded = advBtn.getAttribute('aria-expanded') === 'true';
+                    advBtn.setAttribute('aria-expanded', String(!expanded));
+                    advPanel.style.display = expanded ? 'none' : 'block';
+                    advBtn.textContent = expanded ? 'Advanced ▾' : 'Advanced ▴';
+                });
+            }
+            if (debugChk && clientLog) {
+                // Toggle clientLog visibility with Debug mode
+                const setLog = () => { clientLog.style.display = debugChk.checked ? 'block' : 'none'; };
+                debugChk.addEventListener('change', setLog);
+                setLog();
+            }
+        })();
+        // Record SVG button wiring
+        (function(){
+            const recordSvgBtn = document.getElementById('recordSvgBtn');
+            const recordIndicator = document.getElementById('recordIndicator');
+            const recDuration = document.getElementById('recDuration');
+            let svgRecording = false;
+            if (!recordSvgBtn) return;
+            recordSvgBtn.addEventListener('click', () => {
+                // toggle
+                if (!svgRecording) {
+                    if (typeof window.startSVGRecording === 'function') window.startSVGRecording();
+                    svgRecording = true;
+                    recordSvgBtn.textContent = 'Stop SVG';
+                    if (recordIndicator) recordIndicator.style.display = 'flex';
+                    if (recDuration) recDuration.textContent = '00:00';
+                } else {
+                    if (typeof window.stopSVGRecording === 'function') window.stopSVGRecording();
+                    svgRecording = false;
+                    recordSvgBtn.textContent = 'Record SVG';
+                    if (recordIndicator) recordIndicator.style.display = 'none';
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

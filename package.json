@@ -1,0 +1,19 @@
+{
+  "name": "ho-record-converter",
+  "version": "1.0.0",
+  "description": "Small server to convert WebM to MP4 using ffmpeg for House of Orbit recordings",
+  "main": "server.js",
+  "scripts": {
+  "start": "node server.js",
+  "start-server": "node server.js",
+  "build": "node ./scripts/build-static.js",
+  "prepare-dist": "npm run build",
+  "restart": "sh ./scripts/restart-server.sh",
+  "clean-uploads": "node ./scripts/clean-uploads.js",
+  "start-and-open": "sh -c \"node server.js > server.log 2>&1 & sleep 0.6 ; open index.html\""
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "multer": "^1.4.4"
+  }
+}

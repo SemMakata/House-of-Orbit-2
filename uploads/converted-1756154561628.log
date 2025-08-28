@@ -1,0 +1,27 @@
+ffmpeg version 7.1.1 Copyright (c) 2000-2025 the FFmpeg developers
+  built with Apple clang version 17.0.0 (clang-1700.0.13.3)
+  configuration: --prefix=/opt/homebrew/Cellar/ffmpeg/7.1.1_5 --enable-shared --enable-pthreads --enable-version3 --cc=clang --host-cflags= --host-ldflags='-Wl,-ld_classic' --enable-ffplay --enable-gnutls --enable-gpl --enable-libaom --enable-libaribb24 --enable-libbluray --enable-libdav1d --enable-libharfbuzz --enable-libjxl --enable-libmp3lame --enable-libopus --enable-librav1e --enable-librist --enable-librubberband --enable-libsnappy --enable-libsrt --enable-libssh --enable-libsvtav1 --enable-libtesseract --enable-libtheora --enable-libvidstab --enable-libvmaf --enable-libvorbis --enable-libvpx --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxml2 --enable-libxvid --enable-lzma --enable-libfontconfig --enable-libfreetype --enable-frei0r --enable-libass --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopenjpeg --enable-libspeex --enable-libsoxr --enable-libzmq --enable-libzimg --disable-libjack --disable-indev=jack --enable-videotoolbox --enable-audiotoolbox --enable-neon
+  libavutil      59. 39.100 / 59. 39.100
+  libavcodec     61. 19.101 / 61. 19.101
+  libavformat    61.  7.100 / 61.  7.100
+  libavdevice    61.  3.100 / 61.  3.100
+  libavfilter    10.  4.100 / 10.  4.100
+  libswscale      8.  3.100 /  8.  3.100
+  libswresample   5.  3.100 /  5.  3.100
+  libpostproc    58.  3.100 / 58.  3.100
+Input #0, matroska,webm, from 'uploads/8b654b733257c861bdc3938a378876d3':
+  Metadata:
+    encoder         : WebKit
+  Duration: N/A, start: 0.000000, bitrate: N/A
+  Stream #0:0(eng): Video: vp9 (Profile 0), yuv420p(tv), 3885x2160, SAR 1:1 DAR 259:144, 1k tbr, 1k tbn (default)
+Stream mapping:
+  Stream #0:0 -> #0:0 (vp9 (native) -> prores (prores_ks))
+Press [q] to stop, [?] for help
+Output #0, mov, to 'uploads/converted-1756154561813.mov':
+  Metadata:
+    encoder         : Lavf61.7.100
+  Stream #0:0(eng): Video: prores (4444) (ap4h / 0x68347061), yuv444p10le(tv, progressive), 3885x2160 [SAR 1:1 DAR 259:144], q=2-31, 200 kb/s, 1k fps, 16k tbn (default)
+      Metadata:
+        encoder         : Lavc61.19.101 prores_ks
+frame=    1 fps=0.0 q=-0.0 size=       0KiB time=00:00:00.00 bitrate= 288.0kbits/s speed=0.00199x    frame=   18 fps= 18 q=-0.0 size=    6912KiB time=00:00:00.29 bitrate=191943.7kbits/s speed=0.293x    frame=   37 fps= 25 q=-0.0 size=   14848KiB time=00:00:00.62 bitrate=193686.5kbits/s speed=0.416x    frame=   53 fps= 26 q=-0.0 size=   21248KiB time=00:00:00.89 bitrate=194484.8kbits/s speed=0.442x    frame=   72 fps= 28 q=-0.0 size=   28928KiB time=00:00:01.22 bitrate=192979.2kbits/s speed=0.485x    frame=   88 fps= 29 q=-0.0 size=   35584KiB time=00:00:01.49 bitrate=194986.2kbits/s speed=0.493x    frame=  105 fps= 30 q=-0.0 size=   42496KiB time=00:00:01.81 bitrate=192123.4kbits/s speed=0.512x    frame=  123 fps= 30 q=-0.0 size=   49408KiB time=00:00:02.09 bitrate=193198.4kbits/s speed=0.518x    frame=  143 fps= 31 q=-0.0 size=   56320KiB time=00:00:02.44 bitrate=188700.9kbits/s speed=0.537x    frame=  159 fps= 31 q=-0.0 size=   62208KiB time=00:00:02.71 bitrate=187978.0kbits/s speed=0.537x    frame=  176 fps= 32 q=-0.0 size=   68608KiB time=00:00:03.01 bitrate=186599.3kbits/s speed=0.542x    frame=  191 fps= 32 q=-0.0 size=   74240KiB time=00:00:03.26 bitrate=186442.2kbits/s speed=0.538x    frame=  205 fps= 31 q=-0.0 size=   79616KiB time=00:00:03.51 bitrate=185763.2kbits/s speed=0.535x    frame=  227 fps= 32 q=-0.0 size=   87296KiB time=00:00:03.87 bitrate=184406.7kbits/s speed=0.549x    frame=  243 fps= 32 q=-0.0 size=   93184KiB time=00:00:04.16 bitrate=183456.8kbits/s speed=0.55x    frame=  257 fps= 32 q=-0.0 size=   98304KiB time=00:00:04.39 bitrate=183274.2kbits/s speed=0.544x    frame=  270 fps= 31 q=-0.0 size=  103168KiB time=00:00:04.61 bitrate=183290.5kbits/s speed=0.538x    frame=  288 fps= 32 q=-0.0 size=  109824KiB time=00:00:04.92 bitrate=182564.6kbits/s speed=0.543x    frame=  307 fps= 32 q=-0.0 size=  116736KiB time=00:00:05.29 bitrate=180604.6kbits/s speed=0.552x    frame=  324 fps= 32 q=-0.0 size=  122624KiB time=00:00:05.57 bitrate=180088.9kbits/s speed=0.553x    frame=  339 fps= 32 q=-0.0 size=  128256KiB time=00:00:05.82 bitrate=180249.3kbits/s speed=0.55x    frame=  357 fps= 32 q=-0.0 size=  134912KiB time=00:00:06.14 bitrate=179853.4kbits/s speed=0.554x    frame=  374 fps= 32 q=-0.0 size=  141312KiB time=00:00:06.42 bitrate=180091.5kbits/s speed=0.554x    frame=  392 fps= 32 q=-0.0 size=  147712KiB time=00:00:06.74 bitrate=179427.2kbits/s speed=0.557x    frame=  409 fps= 32 q=-0.0 size=  153600KiB time=00:00:07.02 bitrate=179039.8kbits/s speed=0.557x    frame=  427 fps= 33 q=-0.0 size=  160256KiB time=00:00:07.34 bitrate=178760.5kbits/s speed=0.56x    frame=  443 fps= 33 q=-0.0 size=  166144KiB time=00:00:07.61 bitrate=178827.0kbits/s speed=0.559x    [out#0/mov @ 0x155204300] video:174769KiB audio:0KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: 0.003476%
+frame=  464 fps= 33 q=-0.0 Lsize=  174776KiB time=00:00:07.97 bitrate=179463.7kbits/s speed=0.566x    

@@ -1,0 +1,271 @@
+<!-- DELETED: duplicate backup file. Original content moved/removed. -->
+
+    <script src="libraries/p5.min.js"></script>
+    <script src="libraries/opentype.min.js"></script>
+       <script src="libraries/paper-full.min.js"></script>
+  </head>
+
+  <body>
+    <!-- Hamburger Menu Button -->
+    <button id="hamburgerBtn" class="hamburger-btn">
+      <span class="hamburger-icon">☰</span>
+      <span class="close-icon" style="display: none;">✕</span>
+    </button>
+    
+    <div class="wrap">
+      <aside class="panel">
+        <h1>Orbit — Twin Lines</h1>
+        <div class="sub">
+          TR1: GV2→GD1→GD2→GV3→GH2 · TR2: GH2→GV2→GD1→GD2→GV3
+        </div>
+        <div class="row">
+          <label>Zone</label
+          ><input
+            id="zone"
+            type="text"
+            value="—"
+            readonly
+            style="
+              flex: 1;
+              background: #fff;
+              border: 1px solid #e6e9f2;
+              border-radius: 8px;
+              padding: 6px 8px;
+            "
+          />
+        </div>
+        <div class="row">
+          <label>Hoek θ (deg)</label
+          ><input
+            id="theta"
+            type="range"
+            min="0"
+            max="360"
+            step="1"
+            value="0"
+          /><input id="thetaNum" type="number" value="0" />
+        </div>
+        <div class="row">
+          <label>Snelheid (deg/s)</label
+          ><input
+            id="speed"
+            type="range"
+            min="5"
+            max="360"
+            step="1"
+            value="60"
+          /><input id="speedNum" type="number" value="60" />
+        </div>
+        <div class="row">
+          <label>Orbit R (px)</label
+          ><input
+            id="R"
+            type="range"
+            min="10"
+            max="800"
+            step="1"
+            value="270"
+          /><input id="Rnum" type="number" value="270" />
+        </div>
+        <div class="row">
+          <label>Cirkel r (px)</label
+          ><input
+            id="rc"
+            type="range"
+            min="10"
+            max="80"
+            step="1"
+            value="60"
+          /><input id="rcNum" type="number" value="60" />
+        </div>
+        <div class="row">
+          <label>Lijnbreedte</label
+          ><input
+            id="lw"
+            type="range"
+            min="1"
+            max="30"
+            step="1"
+            value="13"
+          /><input id="lwNum" type="number" step="1" value="13" />
+        </div>
+        <div class="row">
+          <label>Grid/Huis Grootte (%)</label
+          ><input
+            id="gridScale"
+            type="range"
+            min="10"
+            max="150"
+            step="5"
+            value="100"
+          /><input id="gridScaleNum" type="number" step="5" value="100" />
+        </div>
+        <div class="row">
+          <label>Master Schaal (%)</label
+          ><input
+            id="masterScale"
+            type="range"
+            min="25"
+            max="200"
+            step="5"
+            value="100"
+          /><input id="masterScaleNum" type="number" step="5" value="100" />
+        </div>
+        <div class="row">
+          <label>Grid Breedte</label
+          ><input
+            id="gridWidth"
+            type="range"
+            min="0.3"
+            max="2.0"
+            step="0.1"
+            value="1.0"
+          /><input id="gridWidthNum" type="number" step="0.1" value="1.0" />
+        </div>
+        <div class="row">
+          <label>Grid Hoogte</label
+          ><input
+            id="gridHeight"
+            type="range"
+            min="0.3"
+            max="2.0"
+            step="0.1"
+            value="1.0"
+          /><input id="gridHeightNum" type="number" step="0.1" value="1.0" />
+        </div>
+        <div class="row">
+          <label>Tekst Grootte</label
+          ><input
+            id="fontSize"
+            type="range"
+            min="12"
+            max="80"
+            step="2"
+            value="45"
+          /><input id="fontSizeNum" type="number" step="2" value="45" />
+        </div>
+        <div class="row">
+          <label>Regel Hoogte</label
+          ><input
+            id="lineHeight"
+            type="range"
+            min="0.5"
+            max="1.5"
+            step="0.05"
+            value="0.9"
+          /><input id="lineHeightNum" type="number" step="0.05" value="0.9" />
+        </div>
+        <div class="row">
+          <label>Tekst Marge</label
+          ><input
+            id="textPadding"
+            type="range"
+            min="5"
+            max="50"
+            step="5"
+            value="20"
+          /><input id="textPaddingNum" type="number" step="5" value="20" />
+        </div>
+        <div class="row">
+          <label>Tekst Inhoud</label>
+          <textarea
+            id="textContent"
+            rows="3"
+            style="
+              flex: 1;
+              font-family: monospace;
+              resize: vertical;
+              padding: 6px 8px;
+              border: 1px solid #e6e9f2;
+              border-radius: 8px;
+            "
+          >
+HOUSE
+OF
+ORBIT</textarea
+          >
+        </div>
+        <div class="tog">
+          <input id="showText" type="checkbox" checked />
+          <label for="showText">Toon Tekst</label>
+        </div>
+        <div class="tog">
+          <input id="grid" type="checkbox" />
+          <label for="grid">Help‑grid</label>
+        </div>
+        <div class="tog">
+          <input id="debug" type="checkbox" />
+          <label for="debug">Debug modus</label>
+        </div>
+        <div class="btns">
+          <button id="exportSVG">📸 Export SVG</button
+          ><button id="exportPNG">🖼️ Export PNG</button>
+        </div>
+        <div class="btns">
+          <button id="playBtn">▶︎ Animatie</button
+          ><button id="reset">Reset</button>
+        </div>
+      </aside>
+      <main></main>
+    </div>
+    
+    <!-- Color Picker Menu (initially hidden) -->
+    <div id="colorMenu" class="color-menu hidden">
+      <div class="color-menu-content">
+        <h2>Color Settings</h2>
+        <div class="color-section">
+          <div class="color-item" data-color="background">
+            <span class="color-label">Background</span>
+            <div class="color-preview" id="bgPreview"></div>
+            <div class="rgb-sliders">
+              <div class="rgb-slider">
+                <span>R:</span>
+                <input type="range" id="bgR" min="0" max="255" value="255">
+                <span class="rgb-value" id="bgRValue">255</span>
+              </div>
+              <div class="rgb-slider">
+                <span>G:</span>
+                <input type="range" id="bgG" min="0" max="255" value="255">
+                <span class="rgb-value" id="bgGValue">255</span>
+              </div>
+              <div class="rgb-slider">
+                <span>B:</span>
+                <input type="range" id="bgB" min="0" max="255" value="255">
+                <span class="rgb-value" id="bgBValue">255</span>
+              </div>
+            </div>
+          </div>
+          <div class="color-item" data-color="foreground">
+            <span class="color-label">Lines & Text</span>
+            <div class="color-preview" id="fgPreview"></div>
+            <div class="rgb-sliders">
+              <div class="rgb-slider">
+                <span>R:</span>
+                <input type="range" id="fgR" min="0" max="255" value="11">
+                <span class="rgb-value" id="fgRValue">11</span>
+              </div>
+              <div class="rgb-slider">
+                <span>G:</span>
+                <input type="range" id="fgG" min="0" max="255" value="15">
+                <span class="rgb-value" id="fgGValue">15</span>
+              </div>
+              <div class="rgb-slider">
+                <span>B:</span>
+                <input type="range" id="fgB" min="0" max="255" value="26">
+                <span class="rgb-value" id="fgBValue">26</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="color-menu-controls">
+          <div class="menu-option" id="resetOption">
+            <span class="menu-label">Reset Colors</span>
+          </div>
+          <div class="gamepad-hint">Up/Down: Navigate • X: Select • Circle: Back/Save • PSN: Close</div>
+        </div>
+      </div>
+    </div>
+    
+    <script src="sketch.js"></script>
+  </body>
+</html>
