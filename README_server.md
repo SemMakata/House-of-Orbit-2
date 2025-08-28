@@ -13,7 +13,7 @@ npm install
 node server.js
 ```
 
-The server binds to all interfaces (0.0.0.0) by default so you can access it from other devices on your LAN.
+The server binds to localhost (127.0.0.1) by default for safety; to expose it to your LAN set HOST or BIND to 0.0.0.0 when starting the server.
 
 Endpoint
 - POST /convert
@@ -21,11 +21,16 @@ Endpoint
   - Returns: MP4 file as response download
 
 Usage
-- Find your machine's LAN IP address. When you run `node server.js` it will print addresses like `http://192.168.1.45:3333`.
- - Find your machine's LAN IP address. When you run `node server.js` it will print addresses like `http://192.168.2.5:3333`.
- - Set `SERVER_CONVERT_URL` in `sketch.js` to point to the server using your machine IP, e.g.: `http://192.168.2.5:3333/convert`.
+- If running locally and you want the client to upload to the local converter, point the client to `http://localhost:3333/convert`.
+- For a deployed site behind a reverse proxy, set `SERVER_CONVERT_URL` in `sketch.js` to `https://houseoforbit.semmakata.com/convert`.
 Note about network exposure
-- By default this server now binds to your machine's primary LAN IPv4 address so it will be reachable by other devices on the same local network (for example `http://192.168.2.5:3333`). This is intended for LAN-only use.
+- By default this server binds to `127.0.0.1` to avoid accidental public exposure. To make it listen on all interfaces use:
+
+```bash
+HOST=0.0.0.0 node server.js
+```
+
+If you run the server behind a reverse proxy (recommended for public hosting) configure your proxy to route `/convert` or `/ffmpeg` to `http://127.0.0.1:3333/convert`.
 - If you want the server to be strictly localhost-only (not accessible from other devices), start it with:
 
 ```bash
@@ -49,7 +54,7 @@ node server.js
 Quick curl test example:
 
 ```bash
-curl -v -F file=@/path/to/recording.webm http://192.168.2.5:3333/convert -o output.mp4
+curl -v -F file=@/path/to/recording.webm http://localhost:3333/convert -o output.mp4
 file output.mp4
 ```
 

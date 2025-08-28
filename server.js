@@ -14,27 +14,10 @@ const upload = multer({ dest: 'uploads/', limits: { fileSize: UPLOAD_MAX } });
 const app = express();
 const os = require('os');
 const PORT = process.env.PORT || 3333;
-// By default bind to the machine's primary LAN IPv4 so the service is reachable on the LAN
-// but not exposed via 0.0.0.0 which sometimes encourages accidental public tunnels.
-const detectHost = () => {
-  if (process.env.HOST) return process.env.HOST;
-  try {
-    const nets = require('os').networkInterfaces();
-    for (const name of Object.keys(nets)) {
-      for (const net of nets[name]) {
-        if (net.family === 'IPv4' && !net.internal) {
-          return net.address;
-        }
-      }
-    }
-  } catch (e) {}
-  // Fallback to localhost if nothing found
-  return '127.0.0.1';
-};
-// Determine a readable LAN host for logging, but bind to 0.0.0.0 by default so the service
-// is reachable from other machines and so startup logs are always printed when run via npm.
-const LOG_HOST = detectHost();
-const BIND_HOST = process.env.BIND || process.env.HOST || '0.0.0.0';
+// For security, bind to localhost by default and avoid printing machine IPs.
+// Set PUBLIC_HOSTNAME to the public domain (e.g. houseoforbit.semmakata.com) used by your proxy.
+const PUBLIC_HOSTNAME = process.env.PUBLIC_HOSTNAME || 'houseoforbit.semmakata.com';
+const BIND_HOST = process.env.BIND || process.env.HOST || '127.0.0.1';
 
 // Basic CORS middleware so the browser can POST from a different origin
 app.use((req, res, next) => {
@@ -100,7 +83,7 @@ function requireAuth(req, res, next) {
 }
 
 // Primary conversion endpoint mounted at /ffmpeg so you can proxy it to
-// https://houseofarts.semmakata.com/ffmpeg
+// https://houseoforbit.semmakata.com/ffmpeg
 // Accept uploads on both /ffmpeg and /convert for compatibility. Both paths route to the same handler.
 app.post(['/ffmpeg', '/convert'], requireAuth, upload.single('file'), (req, res) => {
   if (!req.file) return res.status(400).send('No file uploaded');
@@ -615,23 +598,9 @@ app.get('/uploads-list', (req, res) => {
 });
 
 app.listen(PORT, BIND_HOST, () => {
-  // Print helpful addresses so you can use the server from other devices and from the local machine.
-  console.log(`Conversion server listening (bound) on ${BIND_HOST}:${PORT}`);
-  // Helpful quick links
-  console.log(` - http://localhost:${PORT}`);
-  if (BIND_HOST !== '127.0.0.1' && BIND_HOST !== 'localhost') {
-    console.log(` - http://${BIND_HOST}:${PORT}  (bind)`);
-  }
-  try {
-    const nets = os.networkInterfaces();
-    Object.keys(nets).forEach((name) => {
-      for (const net of nets[name]) {
-        // Show IPv4 non-internal addresses
-        if (net.family === 'IPv4' && !net.internal) {
-          console.log(` - http://${net.address}:${PORT}`);
-        }
-      }
-    });
-  } catch (e) {}
+  console.log(`Conversion server listening on ${BIND_HOST}:${PORT}`);
+  console.log(`Reverse-proxy /ffmpeg to this service at https://${PUBLIC_HOSTNAME}/convert (or /ffmpeg).`);
+  console.log(' - Local access: http://localhost:' + PORT);
+  console.log('Note: this service is intentionally bound to localhost by default for security; configure your reverse proxy to expose it at your public domain.');
   console.log('Requires ffmpeg installed and available on PATH');
 });

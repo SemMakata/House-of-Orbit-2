@@ -120,7 +120,8 @@ const S = {
 // we prefer the local converter at http://localhost:3333 so the tunnel gate page
 // doesn't interfere with automated uploads.
 // Default to local LAN converter. Set this to your machine IP if different.
-let SERVER_CONVERT_URL = `http://192.168.2.5:3333/convert`;
+// Default converter URL — public endpoint. Override in the UI if needed.
+let SERVER_CONVERT_URL = `https://houseoforbit.semmakata.com/convert`;
 // Credentials for Basic auth (the server must be started with these env vars).
 let SERVER_CONVERT_USER = 'hoadmin';
 let SERVER_CONVERT_PASS = 'r8VqL2x9sZkP4nT1';
@@ -133,28 +134,12 @@ let SERVER_CONVERT_AUTH = '';
 const SERVER_CONVERT_PORT = 3333;
 
 // If you want to force a different converter host, set DEFAULT_CONVERT_HOST accordingly.
-const DEFAULT_CONVERT_HOST = '192.168.2.5';
+const DEFAULT_CONVERT_HOST = 'houseoforbit.semmakata.com';
 
 // If the page is served from a LAN IP (for example when you're using Live Server on
-// port 5500 and accessing via http://192.168.1.45:5500), prefer using that IP as
-// the conversion server host so uploads target the machine instead of localhost.
-(function preferLocalConvertServer() {
-  try {
-    const host = window && window.location && window.location.hostname ? window.location.hostname : '';
-    // If we are on an IPv4 address (e.g., 192.168.x.y) or explicitly on localhost, prefer the local converter
-    const isIPv4 = !!host.match(/^\d+\.\d+\.\d+\.\d+$/);
-    // Only auto-prefer when the page is served from an IPv4 LAN address. Do NOT
-    // automatically fall back to localhost -- leave the configured value alone
-    // if the page is not on a LAN address. This avoids binding to localhost
-    // against the user's request.
-    if (isIPv4) {
-      const serverHost = host;
-      SERVER_CONVERT_URL = `http://${serverHost}:${SERVER_CONVERT_PORT}/convert`;
-    }
-  } catch (e) {
-    // ignore — fallback to tunnel URL
-  }
-})();
+// port 5500 and accessing via http://localhost:5500), the UI still defaults to the
+// public converter domain. Users can override `SERVER_CONVERT_URL` in the UI if they host
+// the converter themselves (for example: https://houseoforbit.semmakata.com/convert).
 
 // --- Global UI / utility helpers used by recording/upload flow ---
 function downloadBlob(blob, filename) {

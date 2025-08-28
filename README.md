@@ -21,17 +21,13 @@ brew install node ffmpeg
 npm install express multer
 ```
 
-3. Start the conversion server (binds to your LAN IP by default):
+3. Start the conversion server (binds to localhost by default):
 
 ```bash
 node server.js
 ```
 
-The server will log the LAN address to use, for example:
-
-Conversion server listening on http://192.168.2.5:3333
-
-Point the client `convert URL` input to that address (it is pre-filled in the UI by default when possible).
+The server will log its listening address (typically http://localhost:3333 when run locally). If you deploy behind a reverse proxy set the client `convert URL` to the public domain, for example `https://houseoforbit.semmakata.com/convert`.
 
 Notes & troubleshooting
 - The server expects a multipart POST with field `file`. The client already handles this automatically.
@@ -39,7 +35,7 @@ Notes & troubleshooting
 - If conversion fails, check `server.log` for ffmpeg stderr and the browser's on-page `clientLog` element for client-side diagnostics.
 
 Security
-- This server is intended for local LAN use only; it binds to the machine's LAN IP by default. Do not expose it to the public internet without adding proper auth and TLS.
+- This server binds to localhost by default to avoid accidental public exposure. If you expose it publicly, add authentication, rate-limits, and TLS.
 
 If you want me to also remove the `uploads/` directory after tests or add a simple npm script to start the server, tell me and I'll add it.
 

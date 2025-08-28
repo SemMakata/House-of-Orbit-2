@@ -24,28 +24,28 @@ If you'd like, I can also:
 - Add a simple index rewrite or 404 fallback if your host needs it.
 - Add a GitHub Actions workflow that builds and deploys to GitHub Pages automatically.
 
-## Deploying the static site + conversion endpoint to houseofarts.semmakata.com
+## Deploying the static site + conversion endpoint to houseoforbit.semmakata.com
 
-If you want a single server to host both the static site and the ffmpeg conversion endpoint at `https://houseofarts.semmakata.com` (with the conversion API available at `https://houseofarts.semmakata.com/ffmpeg`), here is a simple approach using nginx as a reverse proxy and systemd to manage the Node process.
+If you want a single server to host both the static site and the ffmpeg conversion endpoint at `https://houseoforbit.semmakata.com` (with the conversion API available at `https://houseoforbit.semmakata.com/convert`), here is a simple approach using nginx as a reverse proxy and systemd to manage the Node process.
 
-1) Build the static bundle locally and upload `dist/` to the server's web root (e.g. `/var/www/houseofarts`):
+1) Build the static bundle locally and upload `dist/` to the server's web root (e.g. `/var/www/houseoforbit`):
 
 ```bash
 npm run build
-# upload the contents of dist/ to /var/www/houseofarts on your server (scp/rsync)
+# upload the contents of dist/ to /var/www/houseoforbit on your server (scp/rsync)
 ```
 
 2) Copy `server.js`, `uploads/` folder, and `node_modules` (or install deps there) to a directory on the server, e.g. `/opt/ho-converter`.
 
-3) Example nginx site config (Ubuntu/Debian: `/etc/nginx/sites-available/houseofarts`):
+3) Example nginx site config (Ubuntu/Debian: `/etc/nginx/sites-available/houseoforbit`):
 
 ```nginx
 server {
   listen 80;
-  server_name houseofarts.semmakata.com;
+  server_name houseoforbit.semmakata.com;
 
   # Serve static files directly from the uploaded dist/ folder
-  root /var/www/houseofarts;
+  root /var/www/houseoforbit;
   index index.html;
 
   location / {
@@ -53,8 +53,9 @@ server {
   }
 
   # Proxy /ffmpeg to the Node conversion service
-  location /ffmpeg/ {
-    proxy_pass http://127.0.0.1:3333/ffmpeg/;
+  # Proxy the public /convert path to the local Node converter
+  location /convert/ {
+    proxy_pass http://127.0.0.1:3333/convert/;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -101,7 +102,7 @@ sudo journalctl -u ho-converter -f
 
 5) DNS & TLS
 
-- Point `houseofarts.semmakata.com` A record to your server's public IP.
+- Point `houseoforbit.semmakata.com` A record to your server's public IP.
 - For TLS/HTTPS, use Certbot to obtain a Let's Encrypt certificate and enable HTTPS in nginx. If you enable HTTPS, update nginx to listen on 443 and redirect 80 to 443.
 
 Security notes
